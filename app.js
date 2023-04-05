@@ -21,15 +21,11 @@ app.use('', (req, res, next) => {
 //* register
  app.post('/register', (req, res, next) => {    //TODO check if the username don't already exist
  let current_user = req.body.username; //? a modifier quand j'aurais trouvé l'accès au nom d'utilisateur
- user.find().select({ username: 1 })
+ current_user = current_user.toLowerCase();
+ user.find({ $text: { $search: username }}).select(current_user)
   .then(usersname => {
-    let know_user = false;
-    usersname.forEach(user => {
-      if (user.username === current_user) {
-        know_user = true;
-      }
-    })
-    if (know_user) {
+    usersname = usersname.toLowerCase();
+    if (usersname === current_user) {
       res.status(400).json({ error: 'Username already exists' });
     } else {
       res.status(200).json({ message: 'Valid username' });
