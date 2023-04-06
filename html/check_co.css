@@ -1,0 +1,72 @@
+/** import police Poppins*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Poppins, sans-serif;
+    background-color: #12181F;
+}
+
+h1 {
+    color: #FFFFFF;
+    font-weight: 600;
+    padding-left: 13%;
+    padding-top: 11%;
+    font-size: 4em;
+}
+
+p {
+    color: #2B3540;
+    font-weight: 400;
+    display: inline-block;
+}
+
+.comment {
+    padding-top: 17%;
+    padding-left: 41.5%;
+    display: flex;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.contains_dots {
+    display: flex;
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+}
+
+.dot {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: #2B3540;
+    animation: animate_dots 1.2s ease-in-out infinite;
+}
+
+@keyframes animate_dots {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(2px);
+    }
+    80% {
+        transform: translateY(-1px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+  
+.dot:nth-child(2) {
+    animation-delay: 0.4s;
+}
+  
+.dot:nth-child(3) {
+    animation-delay: 0.8s;
+}
