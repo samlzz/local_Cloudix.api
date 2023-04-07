@@ -3,6 +3,7 @@ function check_co() {
         console.log("Browser is online");
     } else {
         console.log("Browser is offline");
+        window.location.href = "no-network.html";
     }
 };
 
