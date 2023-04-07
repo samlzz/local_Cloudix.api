@@ -31,17 +31,27 @@ app.use('', (req, res, next) => {
 */
 
 //* register
-app.use('/register', (req, res, next) => {   //TODO check if the username don't already exist
-  let current_user = req.body.user.username; //? a modifier quand j'aurais trouvé l'accès au nom d'utilisateur
-  current_user = current_user.toLowerCase();
-  User.findOne({ data_name: current_user }).select({data_name: 1})
-  .then(usersname => {
-    if (usersname?.data_name === current_user) {
+app.post('/register', (req, res, next) => {   //TODO check if the username don't already exist
+  let user_registry = req.body.User.username; //? a modifier quand j'aurais trouvé l'accès au nom d'utilisateur
+  user_registry = current_user.toLowerCase();
+  User.findOne({ data_name: user_registry }).select({data_name: 1})
+  .then(usersname_r => {
+    if (usersname_r?.data_name === user_registry) {
       res.status(400).json({ error: 'Username already exists' });
     } else {
       res.status(200).json({ message: 'Valid username' });
-    }
-  });
+    } })
+  .catch(error => res.status(400).json({ error }));
+  next();
+});
+
+//* login
+app.post('/login', (req, res, next) => { //TODO check if the user who try to login is existing
+  let user_who_log = req.body.User.username;  //? a modifier quand j'aurais trouvé l'accès au nom d'utilisateur
+  user_who_log = user_who_log.toLowerCase();
+  User.findOne({ data_name: user_who_log })
+  .then(usersname_l => { res.status(200).json({ message: 'User find', user: usersname_l}) })
+  .catch(error => res.status(400).json({error, message: 'User don t find'}));
 });
 
 module.exports = app;
