@@ -1,8 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
-const routes_register = require('./routes/register');
-const routes_login = require('./routes/login');
+const routes_user = require('./routes/user')
 
 //* connection to mongodb
 const uri = 'mongodb+srv://Manager:fK0NfcW7IcKvT53w@cluster0.46xga.mongodb.net/?retryWrites=true&w=majority';
@@ -13,9 +12,6 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
 const app = express();
 
 app.use(express.json());  //? intercepts all .json request and puts in req.body
-
-app.use('/register', routes_register);
-
-app.use('/login', routes_login);
+app.use('/user', routes_user);
 
 module.exports = app;
