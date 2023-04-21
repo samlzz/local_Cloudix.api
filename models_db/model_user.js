@@ -8,4 +8,4 @@ const user_schema = mongoose.Schema({
   folder: { type: Array, required: true },
 });
 
-module.exports = mongoose.model('user', user_schema);
+module.exports = mongoose.model('User', user_schema);
