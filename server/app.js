@@ -14,4 +14,8 @@ const app = express();
 app.use(express.json());  //? intercepts all .json request and puts in req.body
 app.use('/user', routes_user);
 
+app.use('', (req, res) => {
+  res.json( "test");
+});
+
 module.exports = app;
