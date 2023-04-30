@@ -1,5 +1,6 @@
 //? ajoute l'utilisateurs du fichier "utilitest" a la base de données
 
+const User = require('../models_db/model_user');
 const utilitest = require('./test/utilitest');
 app.use('', (req, res, next) => {
   const utili = new User({
