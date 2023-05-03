@@ -8,15 +8,16 @@ const User = require('../models_db/model_user');
 const init_mul = require('./config_multer');
 
 
-exports.add_one_file_to_user = (req, res) => {
+exports.add_one_file_to_user = (req, res) => { 
     let user_name = req.body.User.data_name;
     let file_path = req.file.path;
     let file_name = req.file.filename;
     path_uploads = path.join(__dirname, 'data', user_name);
-    if(!fs.existsSync(path_uploads)) {  //? vérifie si le dossier n'existe pas déja
+    //? -->
+    if(!fs.existsSync(path_uploads)) {  //? check if folder doesn't exist
         fs.mkdirSync(path_uploads);
     }
-    const upload = init_mul.single('file');
+    const upload = init_mul.single('upload-file');
     upload(req, res, err => {
         if (err) {
             return res.status(500).json({ err });
@@ -25,7 +26,7 @@ exports.add_one_file_to_user = (req, res) => {
     User.findOne({ data_name: user_name})
     .then(user => {
       if (!user) {  //? check if user are found
-        return res.status(500).json({ error: 'User not found' });
+        return res.status(500).json({ message: 'User not found' });
       }
       user.folder.push({ file_name, file_path });
       user.save();
@@ -39,10 +40,11 @@ exports.add_somme_files_to_user = (req, res) => {
     let file_path = req.file.path;
     let file_name = req.file.filename;
     path_uploads = path.join(__dirname, 'data', user_name);
-    if(!fs.existsSync(path_uploads)) {  //? vérifie si le dossier n'existe pas déja
+    //? -->
+    if(!fs.existsSync(path_uploads)) {  //? check if folder doesn't exist
         fs.mkdirSync(path_uploads);
     }
-    const upload = init_mul.array('file', 12);
+    const upload = init_mul.array('upload-file', 12);
     upload(req, res, err => {
         if (err) {
             return res.status(500).json({ err });
@@ -51,7 +53,7 @@ exports.add_somme_files_to_user = (req, res) => {
     User.findOne({ data_name: user_name})
     .then(user => {
       if (!user) {  //? check if user are found
-        return res.status(500).json({ error: 'User not found' });
+        return res.status(500).json({ message: 'User not found' });
       }
       user.folder.push({ file_name, file_path });
       user.save();
