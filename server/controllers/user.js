@@ -1,13 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
-
 const User = require('../models_db/model_user');
 
 //* LOGIN
-exports.check_id_exist_and_passwrd_valid = (req, res, next) => {  //? check if the user who try to login is existing
+exports.check_id_exist_and_passwrd_valid = (req, res) => {  //? check if the user who try to login is existing
     //* init variables:
-    let user_who_log = req.body.username;  //TODO: vérifier l'accès au nom d'utilisateur
-    let mdp_who_log = req.body.password;  //TODO: ^^^ idem ^^^
+    let user_who_log = req.body.username;
+    let mdp_who_log = req.body.password;
     User.findOne({ data_name: user_who_log.toLowerCase() })
         .then(user_l => {
             //? -->
@@ -18,7 +17,7 @@ exports.check_id_exist_and_passwrd_valid = (req, res, next) => {  //? check if t
                 if (mdp_who_log === user_l.password) {  //? check if passwords matches
                     res.status(200).json( { 
                         user_id: user_l._id, 
-                        toker: 'TOKEN' 
+                        cookie: 'TOKEN' 
                     });  //TODO: générer un token et le transmettre pour identifer la connexion
                 } else {
                     res.status(401).json({ message: 'Wrong password'});
@@ -29,7 +28,7 @@ exports.check_id_exist_and_passwrd_valid = (req, res, next) => {  //? check if t
 };
 
 //* REGISTER
-exports.check_username_exist = (req, res, next) => {  //? check if the username don't already exist and add it to database if doesn't
+exports.check_username_exist = (req, res) => {  //? check if the username don't already exist and add it to database if doesn't
     let user_registry = req.body.username;
     usr_reg_min = user_registry.toLowerCase(); //! nécessaire car j'ai besoin des deux mdp
     User.findOne({ data_name: usr_reg_min }).select({data_name: 1})

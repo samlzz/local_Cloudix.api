@@ -7,7 +7,7 @@ app.set('port', port);
 
 const server = http.createServer(app);
 
-const gest_error = error => {   //TODO manage the error
+const gest_error = error => {   //? manage the error
     if (error.syscall !== 'listen') {
       throw error;
     }
