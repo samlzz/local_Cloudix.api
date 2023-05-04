@@ -11,5 +11,6 @@ router.post('/login', ctrl_user.check_id_exist_and_passwrd_valid);
 //TODO: à tester
 router.post('/oneupload', ctrl_file.add_one_file_to_user);
 router.post('/multiupload', ctrl_file.add_somme_files_to_user);
+router.get('/fileofuser', ctrl_file.send_file_of_user);
 
 module.exports = router;
