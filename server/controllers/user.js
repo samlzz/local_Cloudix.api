@@ -22,7 +22,7 @@ exports.check_id_exist_and_passwrd_valid = (req, res) => {  //? check if the use
                         message: 'correct password',
                         user_id: user_l._id, 
                         cookie: user_l.cookie
-                    });  //TODO: générer un token et le transmettre pour identifer la connexion
+                    });
                 } else {
                     res.status(401).json({ message: 'Wrong password'});
                 }
@@ -34,7 +34,7 @@ exports.check_id_exist_and_passwrd_valid = (req, res) => {  //? check if the use
                 //            message: 'Correct password',
                 //            user_id: user_l._id, 
                 //            cookie: user_l.cookie
-                //        });  //TODO: générer un token et le transmettre pour identifer la connexion
+                //        });
                 //    } else {
                 //        res.status(401).json({ message: 'Wrong password' });
                 //    }
@@ -65,5 +65,5 @@ exports.check_username_exist = (req, res) => {  //? check if the username don't 
                 .catch(error => res.status(400).json({ error }));
             }
         })
-        .catch(error => res.status(400).json({ error }));
+        .catch(error => res.status(500).json({ error }));
 };
