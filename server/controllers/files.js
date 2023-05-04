@@ -10,7 +10,11 @@ const init_mul = require('./config_multer');
 
 exports.add_one_file_to_user = (req, res) => { 
     let user_name = req.body.username.toLowerCase();  //TODO: suprr .toL... si frontend envoie en min
-    path_uploads = path.join(__dirname, 'data', user_name);
+    if(!path_uploads){
+      var path_uploads = path.join(__dirname, 'data', user_name);
+    } else {
+      path_uploads = path.join(__dirname, 'data', user_name);
+    };
     //? -->
     if(!fs.existsSync(path_uploads)) {  //? check if folder doesn't exist
         fs.mkdirSync(path_uploads);
@@ -37,27 +41,38 @@ exports.add_one_file_to_user = (req, res) => {
 };
 
 exports.add_somme_files_to_user = (req, res) => {
-    let user_name = req.body.username.toLowerCase();  //TODO: suprr .toL... si frontend envoie
-    let file_class = req.body.categorie;  //TODO: a ajouter dans la base de donnée ?
+  let user_name = req.body.username.toLowerCase();  //TODO: suprr .toL... si frontend envoie en min
+  if(!path_uploads){
+    var path_uploads = path.join(__dirname, 'data', user_name);
+  } else {
     path_uploads = path.join(__dirname, 'data', user_name);
-    //? -->
-    if(!fs.existsSync(path_uploads)) {  //? check if folder doesn't exist
-        fs.mkdirSync(path_uploads);
+  };
+  //? -->
+  if(!fs.existsSync(path_uploads)) {  //? check if folder doesn't exist
+      fs.mkdirSync(path_uploads);
+  };
+  const upload = init_mul.array('upload-file', 12);
+  upload(req, res, err => {
+      if (err) {
+          return res.status(500).json({ err });
+      };
+  });
+  User.findOne({ data_name: user_name})
+  .then(user => {
+    if (!user){
+      return res.status(500).json({ message: 'User not found' });
     };
-    const upload = init_mul.array('upload-file', 12);
-    upload(req, res, err => {
-        if (err) {
-            return res.status(500).json({ err });
-        };
-    });
-    User.findOne({ data_name: user_name })
-    .then(user => {
-      checkif_founded(user);
-      user.folder.push( req.file.path );
-      user.save();
-      res.status(200).json({ message: "File uploaded successfully." });
-    })
-    .catch(error => res.status(500).json({ error }));
+    for(let i = 0; i<req.file.length; i++){
+      user.folder.push({ 
+        path: req.file.path, 
+        categorie: req.body.categorie 
+      });
+    };
+    user.save()
+    .then(() => res.status(201).json({ message: 'File uploaded successfully' }))
+    .catch(error => res.status(400).json({ error }));
+  })
+  .catch(error => res.status(500).json({ error }));
 };
 
 exports.send_file_of_user = (req, res) => {
