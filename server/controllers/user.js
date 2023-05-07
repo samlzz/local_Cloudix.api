@@ -27,19 +27,19 @@ exports.check_id_exist_and_passwrd_valid = (req, res) => {  //? check if the use
                     res.status(401).json({ message: 'Wrong password'});
                 }
                 //! ... à là, par :
-                //argon.verify(user_l.password, mdp_who_log)    //!mdp_who_log doit être non chiffré
-                //.then(result => {
-                //    if (result) {
-                //        res.status(200).json( { 
-                //            message: 'Correct password',
-                //            user_id: user_l._id, 
-                //            cookie: user_l.cookie
-                //        });
-                //    } else {
-                //        res.status(401).json({ message: 'Wrong password' });
-                //    }
-                //})
-                //.catch(error => res.status(500).json({ error }));
+                /*argon.verify(user_l.password, mdp_who_log)    //!mdp_who_log doit être non chiffré
+                .then(result => {
+                    if (result) {
+                        res.status(200).json( { 
+                            message: 'Correct password',
+                            user_id: user_l._id, 
+                            cookie: user_l.cookie
+                        });
+                    } else {
+                        res.status(401).json({ message: 'Wrong password' });
+                    }
+                })
+                .catch(error => res.status(500).json({ error }));*/
             }
         })
         .catch(error => res.status(500).json({ error }));
