@@ -6,10 +6,8 @@ const User = require('../models_db/model_user');
 
 //* LOGIN
 exports.check_id_exist_and_passwrd_valid = (req, res) => {  //? check if the user who try to login is existing
-    //* init variables:
-    let user_who_log = req.body.username;
     let mdp_who_log = req.body.password;
-    User.findOne({ data_name: user_who_log.toLowerCase() })
+    User.findOne({ data_name: req.body.data_name })
         .then(user_l => {
             //? -->
             if (user_l === null) {  //? check if username are found
@@ -30,9 +28,7 @@ exports.check_id_exist_and_passwrd_valid = (req, res) => {  //? check if the use
                 /*argon.verify(user_l.password, mdp_who_log)    //!mdp_who_log doit être non chiffré
                 .then(result => {
                     if (result) {
-                        res.status(200).json( { 
-                            message: 'Correct password',
-                            user_id: user_l._id, 
+                        res.status(200).json( {
                             cookie: user_l.cookie
                         });
                     } else {
