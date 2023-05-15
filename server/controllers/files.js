@@ -10,23 +10,21 @@ const Public_files = require('../models_db/model_public_files');
 
 //* UPLOAD ONE PRIVATE FILE
 exports.add_one_file_to_user = (req, res) => {
-  /*
-  if(req.body.categorie === 'public'){
+  if(req.body.categorie !== 'private'){
     return res.status(400).json({ message: "Request for a private file and it is a public file" });
   };
-  */
-  let user_name = JSON.parse(req.body.data_name);
-  path_folder = path.join(__dirname, '..', 'data', user_name);
-  //? -->
-  User.findById(JSON.parse(req.body.data_name)) //TODO
+  let user_name = req.body.data_name;
+  if (!user_name){
+    return res.status(400).json({ message: 'data_name not defined'});
+  };
+  let path_folder = path.join(__dirname, '..', 'data', user_name);
+  User.findById(req.body.user_id)
   .then(user => {
+    console.log(user);
     if (!user){
       return res.status(500).json({ message: 'User not found' });
     };
-    user.folder.push({ 
-      path: path.join(path_folder, req.file.originalname), 
-      //path: path.join(path_folder, 'begin.txt')
-    });
+    user.folder.push({ path: path.join(path_folder, req.file.originalname) });
     user.save()
     .then(() => res.status(201).json({ message: 'File uploaded successfully' }))
     .catch(error => res.status(500).json({ error }));
@@ -126,7 +124,7 @@ exports.add_file_to_public = (req, res) => {
 //* RETURN FILES OF A USER
 exports.send_file_of_user = (req, res) => {
   let files_list = [];
-  User.findById(req.body.user_id)
+  User.findOne({data_name: req.body.data_name})
   .then(user => {
     if (!user){
       return res.status(500).json({ message: 'User not found' });

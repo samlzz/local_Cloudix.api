@@ -30,18 +30,17 @@ exports.check_id_exist_and_passwrd_valid = (req, res) => {  //? check if the use
 
 //* REGISTER
 exports.check_username_exist = (req, res) => {  //? check if the username don't already exist and add it to database if doesn't
-    let user_registry = req.body.username;
-    usr_reg_min = user_registry.toLowerCase(); //! nécessaire car j'ai besoin des deux id
+    let usr_reg_min = req.body.username.toLowerCase(); //! nécessaire car j'ai besoin des deux id
     User.findOne({ data_name: usr_reg_min }).select({data_name: 1})
         .then(user_r => {
             if (user_r?.data_name === usr_reg_min) { 
                 res.status(409).json({ error: 'Username already exists' });
             } else {  //? add new user
                 argon.hash(req.body.password)
-                .then(hash_ofmdp =>{
+                .then(hash_ofmdp => {
                     const user = new User({
                         data_name: usr_reg_min,
-                        username: user_registry,
+                        username: req.body.username,
                         password: hash_ofmdp 
                     });
                     user.save()

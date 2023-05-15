@@ -9,10 +9,8 @@ const mult = require('./controllers/multer');
 router.post('/register', ctrl_user.check_username_exist);
 router.post('/login', ctrl_user.check_id_exist_and_passwrd_valid);
 //* FILES
-/*router.post('/changecategorie', ctrl_file.change_categorie);
+//router.post('/changecategorie', ctrl_file.change_categorie);
 //* PRIVATE FILES
-//TODO: à tester
-*/
 router.get('/fileofuser', ctrl_file.send_file_of_user);
 router.post('/oneupload', mult.single('upload-file'), ctrl_file.add_one_file_to_user);
 /*
