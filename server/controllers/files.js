@@ -10,13 +10,15 @@ const Public_files = require('../models_db/model_public_files');
 
 //* UPLOAD ONE PRIVATE FILE
 exports.add_one_file_to_user = (req, res) => {
-  if(JSON.parse(req.body.categorie) === 'public'){
+  /*
+  if(req.body.categorie === 'public'){
     return res.status(400).json({ message: "Request for a private file and it is a public file" });
   };
+  */
   let user_name = JSON.parse(req.body.data_name);
   path_folder = path.join(__dirname, '..', 'data', user_name);
   //? -->
-  User.findOne({ data_name: user_name})
+  User.findById(JSON.parse(req.body.data_name)) //TODO
   .then(user => {
     if (!user){
       return res.status(500).json({ message: 'User not found' });
@@ -123,21 +125,19 @@ exports.add_file_to_public = (req, res) => {
 
 //* RETURN FILES OF A USER
 exports.send_file_of_user = (req, res) => {
-  let name_user = req.body.username.toLowerCase();  //TODO: suprr .toL... si frontend envoie
   let files_list = [];
-  User.findOne({ data_name: name_user })
+  User.findById(req.body.user_id)
   .then(user => {
     if (!user){
       return res.status(500).json({ message: 'User not found' });
     };
     for (let i = 0; i < user.folder.length; i++) {
       let path_file = user.folder[i].path;
-      let class_fill = user.folder[i].categorie;
-      let {na, ext} = path.parse(path_file);
+      let na = path.basename(path_file)
+      let ext = path.extname(path_file);
       let stats = fs.statSync(path_file);
       files_list.push({
         path: path_file, 
-        categorie: class_fill,
         name: na,
         extension: ext,
         size: stats.size //? size in bytes
@@ -199,6 +199,7 @@ exports.rename_a_file = (req, res) => {
   .catch(error => res.status(500).json({ error }));
 };
 
+/* //TODO: Faire une fonction privé->public et inverse
 //* PUBLIC --> PRIVE AND REVERSE
 exports.change_categorie = (req, res) => {
   User.findOne({ data_name: req.body.data_name })
@@ -220,3 +221,4 @@ exports.change_categorie = (req, res) => {
   })
   .catch(error => res.status(500).json({ error }));
 }; 
+*/
