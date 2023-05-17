@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const argon = require('argon2');
+const path = require('path');
 
 const User = require('../models_db/model_user');
 
@@ -41,7 +42,8 @@ exports.check_username_exist = (req, res) => {  //? check if the username don't 
                     const user = new User({
                         data_name: usr_reg_min,
                         username: req.body.username,
-                        password: hash_ofmdp 
+                        password: hash_ofmdp,
+                        size_count: 0,
                     });
                     user.save()
                     .then(res.status(201).json({ message: 'User was created' }))
@@ -51,4 +53,17 @@ exports.check_username_exist = (req, res) => {  //? check if the username don't 
             }
         })
         .catch(error => res.status(500).json({ error }));
+};
+
+//* DELETE ONE USER
+exports.delete_user = (req, res) =>{
+    User.findByIdAndDelete(req.body.user_id)
+    .then(result => {
+        if(!result){
+            res.status(404).json({ message: "Don't find the user" });
+        } else {
+            res.status(200).json({ message: "Successfully delete the user" });
+        };
+    })
+    .catch(error => res.status(500).json({ error }));
 };

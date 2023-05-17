@@ -9,25 +9,39 @@ const Public_files = require('../models_db/model_public_files');
 
 
 //* UPLOAD ONE PRIVATE FILE
-exports.add_one_file_to_user = (req, res) => {
-  if(req.body.categorie !== 'private'){
+exports.upload_one_private_file = (req, res) => {
+  if(req.body.categorie !== "private"){
     return res.status(400).json({ message: "Request for a private file and it is a public file" });
+  };
+  if(!req.file){
+    return res.status(400).json({ message: "File don't uploaded correctly"});
   };
   let user_name = req.body.data_name;
   if (!user_name){
     return res.status(400).json({ message: 'data_name not defined'});
   };
-  let path_folder = path.join(__dirname, '..', 'data', user_name);
+  let path_moved = path.join(__dirname, '..', 'data', user_name);
+  if(!fs.existsSync(path_moved)) {  //? check if folder doesn't exist
+    fs.mkdirSync(path_moved); //? and create it if it doesn't
+  };
+  path_moved = path.join(path_moved, req.file.filename);
+  fs.renameSync(req.file.path, path_moved);
   User.findById(req.body.user_id)
   .then(user => {
-    console.log(user);
     if (!user){
       return res.status(500).json({ message: 'User not found' });
     };
-    user.folder.push({ path: path.join(path_folder, req.file.originalname) });
-    user.save()
-    .then(() => res.status(201).json({ message: 'File uploaded successfully' }))
-    .catch(error => res.status(500).json({ error }));
+    user.folder.push({ path: path_moved });
+    fs.stat(path_moved, (err, stats) => {
+      if (err) {
+        return res.status(500).json({ message: 'Failed to get file size' , err});
+      }
+      let file_size = stats.size / (1024 * 1024);
+      user.size_count += file_size;
+      user.save()
+       .then(() => res.status(201).json({ message: 'File uploaded successfully' }))
+       .catch(error => res.status(500).json({ error }));
+    });
   })
   .catch(error => res.status(500).json({ error }));
 };

@@ -3,17 +3,11 @@ const mongoose = require('mongoose');
 
 const the_router = require('./routes');
 
-//* connection to mongodb
-const uri = 'mongodb+srv://Manager:fK0NfcW7IcKvT53w@cluster0.46xga.mongodb.net/Cloud?retryWrites=true&w=majority';
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !'));
-
 const app = express();
 
 
-app.use(express.json());  //? intercepts all .json request and puts in req.body
 app.use(express.urlencoded({ extended: true }));
+app.use('', express.json());  //? intercepts all .json request and puts in req.body
 app.use('', the_router);
 
 app.get('/testofupload', (req, res, next) =>{
@@ -28,10 +22,11 @@ app.get('/testofupload', (req, res, next) =>{
           <title>Document</title>
       </head>
       <body>
-          <form action="http://localhost:6699/oneupload" method="post">
-              <input type="text" name="categorie" value="private">
-              <input type="text" name="user_id" value="646280c38492bcf3da97de8c">
-              <input type="text" name="data_name" value="test">
+          <form action="http://localhost:6699/oneupload" method="post" enctype="multipart/form-data">
+              <input type="hidden" name="categorie" value="private">
+              <input type="text" name="user_id" value="6463d261d8133c7d9d61489d">
+              <br>
+              <input type="text" name="data_name" value="samuel">
               <input type="file" name="upload-file" id="upload-file">
               <input type="submit" value="envoyer">
           </form>
@@ -39,7 +34,6 @@ app.get('/testofupload', (req, res, next) =>{
       </html>
       `
   );
-  next();
 });
 
 
