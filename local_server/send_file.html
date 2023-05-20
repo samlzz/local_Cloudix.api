@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=", initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="http://localhost:6699/oneupload" method="post" enctype="multipart/form-data">
+        <select name="categorie">
+            <option value="private">private</option>
+            <option value="public">public</option>
+        </select>
+        <br>
+        <input type="text" name="user_id" value="6463d261d8133c7d9d61489d">
+        <br>
+        <p>data_name:</p>
+        <input type="text" name="data_name">
+        <p>user_name:</p>
+        <input type="text" name="user_name">
+        <br>
+        <input type="file" name="upload-file" id="upload-file">
+        <input type="submit" value="envoyer">
+    </form>
+</body>
+</html>

@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const argon = require('argon2');
-const path = require('path');
 
 const User = require('../models_db/model_user');
 
@@ -43,7 +42,7 @@ exports.check_username_exist = (req, res) => {  //? check if the username don't 
                         data_name: usr_reg_min,
                         username: req.body.username,
                         password: hash_ofmdp,
-                        size_count: 0,
+                        size_count: 0, 
                     });
                     user.save()
                     .then(res.status(201).json({ message: 'User was created' }))
