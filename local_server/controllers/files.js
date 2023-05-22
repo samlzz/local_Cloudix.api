@@ -1,7 +1,9 @@
 const path = require('path');
 const fs = require('fs');
+
 const User = require('../models_db/model_user');
 const Public_files = require('../models_db/model_pufiles');
+const func = require('../middleware/functions');
 
 exports.rename_a_file = (req, res)=>{
     if(!req.body.old_FN || !req.body.new_FN || !req.body.categorie || !req.body.user_id){

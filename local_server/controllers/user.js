@@ -1,68 +1,64 @@
-const express = require('express');
-const mongoose = require('mongoose');
 const argon = require('argon2');
 
 const User = require('../models_db/model_user');
+const func = require('../middleware/functions');
 
 //* LOGIN
-exports.check_id_exist_and_passwrd_valid = (req, res) => {  //? check if the user who try to login is existing
+exports.login = (req, res) => {  //? check if the user who try to login is existing
+    func.check_and_return(res, req.body.password, 400, 'Missing password in request');
+    func.check_and_return(res, req.body.data_name, 400, 'Missing data name in request');
     let mdp_who_log = req.body.password;
     User.findOne({ data_name: req.body.data_name })
-        .then(user_l => {
-            console.log(user_l._id)
-            //? -->
-            if (user_l === null) {  //? check if username are found
-                res.status(401).json({ message: 'Username not found'});
-            } else {
-                argon.verify(user_l.password, mdp_who_log) //? check if passwords matches
-                .then(result => {
-                    if (result) {
-                        res.status(200).json({ user_id: user_l._id });
-                    } else {
-                        res.status(401).json({ message: 'Wrong password' });
-                    }
-                })
-                .catch(error => res.status(500).json({ error: error }));
-            }
+        .then(user => {
+            func.check_and_return(res, user, 401, 'Username not found')
+            argon.verify(user.password, mdp_who_log) //? check if passwords matches
+            .then(result => {
+                if (result) {
+                    return res.status(200).json({ user_id: user._id });
+                } else {
+                    return func.returnSM(res, 401, 'Wrong password');
+                };
+            })
+            .catch(err => func.returnSM(res, 500, 'Error when hash password', err));
         })
-        .catch(error => res.status(500).json({ error }));
+        .catch(err => func.returnSM(res, 500, 'Error when search the user', err));
 };
 
 //* REGISTER
-exports.check_username_exist = (req, res) => {  //? check if the username don't already exist and add it to database if doesn't
+exports.register = (req, res) => {  //? check if the username don't already exist and add it to database if doesn't
+    func.check_and_return(res, req.body.username, 400, 'Missing username in request');
+    func.check_and_return(res, req.body.password, 400, 'Missing password in request');
     let usr_reg_min = req.body.username.toLowerCase(); //! nécessaire car j'ai besoin des deux id
-    User.findOne({ data_name: usr_reg_min }).select({data_name: 1})
-        .then(user_r => {
-            if (user_r?.data_name === usr_reg_min) { 
-                res.status(409).json({ error: 'Username already exists' });
+    User.findOne({ data_name: usr_reg_min }).select({ data_name: 1 })
+        .then(user => {
+            if (user?.data_name === usr_reg_min) {
+                return func.returnSM(res, 409, 'Username already exists');
             } else {  //? add new user
                 argon.hash(req.body.password)
-                .then(hash_ofmdp => {
+                .then(hash_of_mdp => {
                     const user = new User({
                         data_name: usr_reg_min,
                         username: req.body.username,
-                        password: hash_ofmdp,
+                        password: hash_of_mdp,
                         size_count: 0, 
                     });
                     user.save()
-                    .then(res.status(201).json({ message: 'User was created' }))
-                    .catch(error => res.status(400).json({ error }));
+                    .then(func.returnSM(res, 201, 'User was created'))
+                    .catch(err => func.returnSM(res, 500, 'Error when save user', err));
                 })
-                .catch(error => res.status(500).json(error));
-            }
+                .catch(err => func.returnSM(res, 500, 'Error when hash password', err));
+            };
         })
-        .catch(error => res.status(500).json({ error }));
+        .catch(err => func.returnSM(res, 500, 'Error when find user', err));
 };
 
 //* DELETE ONE USER
 exports.delete_user = (req, res) =>{
     User.findByIdAndDelete(req.body.user_id)
     .then(result => {
-        if(!result){
-            res.status(404).json({ message: "Don't find the user" });
-        } else {
-            res.status(200).json({ message: "Successfully delete the user" });
+        if (!func.check_and_return(res, result, 404, "Don't find the user")){
+            func.returnSM(res, 200, "Successfully delete the user");
         };
     })
-    .catch(error => res.status(500).json({ error }));
+    .catch(err => func.returnSM(res, 500, 'Error when search and delete the user', err));
 };
