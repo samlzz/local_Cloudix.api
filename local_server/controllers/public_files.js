@@ -1,10 +1,11 @@
 const path = require('path');
-const Public_files = require('../models_db/model_pufiles');
+const fs = require('fs');
 
+const Public_files = require('../models_db/model_pufiles');
 const func = require('../middleware/functions');
 
-exports.upload_file_and_model_public = (req, res) =>{
-    func.check_and_return(res, user_name, 400, 'Missing data_name');
+exports.upload_a_public_file = (req, res) =>{
+    func.check_and_return(res, req.body.username, 400, 'Missing data_name');
     func.check_and_return(res, req.file, 400, 'Missing file in request');
     let path_moved = path.join(__dirname, '..', 'data', 'public', req.file.filename);
     fs.renameSync(req.file.path, path_moved);
@@ -17,16 +18,16 @@ exports.upload_file_and_model_public = (req, res) =>{
             path: path_moved,
             name: req.file.filename,
             size: file_size,
-            owner: req.body.user_name,
+            owner: req.body.username,
         });
         pu_file.save()
-        .then(func.returnSM(res, 201, 'Successfully uploaded the file in Public'))
+        .then(() => func.returnSM(res, 201, 'Successfully uploaded the file in Public'))
         .catch(err => func.returnSM(res, 201, 'Error when save in database', err));
     });
 };
 
-exports.upload_some_public_files = (req, res) => { //TODO/ c'est juste un ^c ^v de upload multi prv files
-    func.check_and_return(res, user_name, 400, 'Missing data_name');
+exports.upload_some_public_files = (req, res) => {
+    func.check_and_return(res, req.body.username, 400, 'Missing data_name');
     func.check_and_return(res, req.file, 400, 'Missing file in request');
     for(let i = 0; i < req.file.length; i++){
         let path_moved = path.join(__dirname, '..', 'data', 'public', req.file[i].filename);
@@ -39,7 +40,7 @@ exports.upload_some_public_files = (req, res) => { //TODO/ c'est juste un ^c ^v 
                 path: path_moved,
                 name: req.file.filename,
                 size: stats.size / (1024*1024),
-                owner: req.body.user_name,
+                owner: req.body.username,
             });
             apublic_file.save()
             .then(()=>{

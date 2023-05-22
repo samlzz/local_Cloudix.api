@@ -1,6 +1,7 @@
 const path = require('path');
-const User = require('../models_db/model_user');
+const fs = require('fs');
 
+const User = require('../models_db/model_user');
 const func = require('../middleware/functions');
 
 //* RETURN ALL FILE OF ONE USER
@@ -28,7 +29,7 @@ exports.upload_one_private_file = (req, res) => {
   func.check_and_return(res, user_name, 400, 'Missing data_name');
   func.check_and_return(res, req.file, 400, 'Missing file in request');
   let path_moved = path.join(__dirname, '..', 'data', user_name);
-  if(!fs.stat(path_moved)) {  //? check if folder doesn't exist
+  if(!fs.existsSync(path_moved)) {  //? check if folder doesn't exist
     fs.mkdirSync(path_moved); //? and create it if it doesn't
   };
   path_moved = path.join(path_moved, req.file.filename);
@@ -44,7 +45,7 @@ exports.upload_one_private_file = (req, res) => {
       let file_size = stats.size / (1024 * 1024);
       user.size_count += file_size;
       user.save()
-       .then(func.returnSM(res, 201, 'File uploaded successfully'))
+       .then(() => func.returnSM(res, 201, 'File uploaded successfully'))
        .catch(err => func.returnSM(res, 500, 'Error when save the file', err));
     });
   })
@@ -89,7 +90,7 @@ exports.upload_some_private_files = (req, res) => {
   func.check_and_return(res, user_name, 400, 'Missing data_name')
   func.check_and_return(res, req.file, 400, 'Missing file in request')
   let path_moved = path.join(__dirname, '..', 'data', user_name);
-  if(!fs.stat(path_moved)) {  //? check if folder doesn't exist
+  if(!fs.existsSync(path_moved)) {  //? check if folder doesn't exist
     fs.mkdirSync(path_moved); //? and create it if it doesn't
   };
   User.findById(req.body.user_id)
@@ -108,7 +109,7 @@ exports.upload_some_private_files = (req, res) => {
       });
     };
     user.save()
-    .then(func.returnSM(res, 201, 'File uploaded successfully'))
+    .then(() => func.returnSM(res, 201, 'File uploaded successfully'))
     .catch(err => func.returnSM(res, 500, 'Err when save file path', err));
   })
   .catch(err => func.returnSM(res, 500, 'Err when search the user', err));

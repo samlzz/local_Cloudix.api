@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 
+const func = require('./functions');
+
+var DB_status = 'off';
+
 exports.connexion = (req, res, next) => {
     if(!DB_status){
         var DB_status = "off";
@@ -10,12 +14,11 @@ exports.connexion = (req, res, next) => {
         .then(() => {
             DB_status = "on";
             console.log("MongoDB are " + DB_status);
-            req.body.DB_co = true;
         })
         .catch(() => {
             DB_status = "off";
             console.log("MongoDB are " + DB_status);
-            req.body.DB_co = false;
+            return func.returnSM(res, 500, 'Failed to connect to database');
         });
     };
     next();

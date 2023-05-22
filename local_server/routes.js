@@ -27,7 +27,7 @@ const Mongo = require('./middleware/mongoDB');
   router.post('/multiupload', Mongo.connexion, mult.array('upload-file', 12), ctrl_prvfile.upload_some_private_files);  //TODO: a tester
 
 //* PUBLIC FILES
-  router.post('/onepubUpload', Mongo.connexion, mult.single('upload-file'), ctrl_pubfile.upload_file_and_model_public);
+  router.post('/onepubUpload', Mongo.connexion, mult.single('upload-file'), ctrl_pubfile.upload_a_public_file);
   router.post('/multipubUpload', Mongo.connexion, mult.array('upload-file', 12), ctrl_pubfile.upload_some_public_files);  //TODO: a tester
 
 //* FILES   

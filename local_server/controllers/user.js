@@ -43,7 +43,7 @@ exports.register = (req, res) => {  //? check if the username don't already exis
                         size_count: 0, 
                     });
                     user.save()
-                    .then(func.returnSM(res, 201, 'User was created'))
+                    .then(() => func.returnSM(res, 201, 'User was created'))
                     .catch(err => func.returnSM(res, 500, 'Error when save user', err));
                 })
                 .catch(err => func.returnSM(res, 500, 'Error when hash password', err));

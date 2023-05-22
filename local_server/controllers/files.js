@@ -30,7 +30,7 @@ exports.rename_a_file = (req, res)=>{
                 });
             } else if(req.body.categorie === 'public') {
                 Public_files.find({ name: req.body.old_FN })
-                .then(file =>{
+                .then(file => {
                     if(user.username !== file.owner){
                         return res.status(401).json({ message: 'Try to rename a file from an other user'})
                     };
@@ -59,7 +59,7 @@ exports.change_private_file_to_public = (req, res)=>{
         return res.status(400).json({ message: 'Missing informations in request'})
     };
     User.findById(req.body.user_id)
-    .then(user=>{
+    .then(user => {
         let file_to_chang = user.folder.find(file => file.path.includes(req.body.filename));
         file_to_chang = file_to_chang?.path;
         let his_index = user.folder.findIndex(file => file.path === file_to_chang);
@@ -81,7 +81,7 @@ exports.change_private_file_to_public = (req, res)=>{
                 owner: user.username,
             });
             new_pubFile.save()
-            .then(()=>{
+            .then(() => {
                 user.save()
                 .then(res.status(201).json({ message: 'Private file has correctly changed to public' }))
                 .catch(error => res.status(500).json({ message: 'Error when delete private file path', error }));
@@ -97,7 +97,7 @@ exports.change_public_file_to_private = (req,res)=>{
         return res.status(400).json({ message: 'Missing informations in request'})
     };
     Public_files.findOneAndDelete({ name: req.body.filename })
-    .then(file=>{
+    .then(file => {
         let new_prvPath = path.join(__dirname, '..', 'data', req.body.data_name);
         if(!fs.stat(path_moved)) {  //? check if folder doesn't exist
             fs.mkdirSync(path_moved); //? and create it if it doesn't
@@ -108,7 +108,7 @@ exports.change_public_file_to_private = (req,res)=>{
         .then(user=> {
             user.folder.push({ path: new_prvPath });
             user.save()
-            .then(res.status(201).json({ message: 'Public file has correctly changed to private' }))
+            .then(() => res.status(201).json({ message: 'Public file has correctly changed to private' }))
             .catch(error => res.status(500).json({ message: 'Error when add private file path', error }));
         })
         .catch(err=> res.status(500).json({ message: "Err when search the user", err }))
