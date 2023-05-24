@@ -10,7 +10,7 @@ const ctrl_pubfile = require('./controllers/public_files');
 const mult = require('./middleware/multer_prvfile');
 
 //* MONGODB STATUS
-  router.get('/mongodb', Mongo.connexion, (req, res) => {
+  router.get('/mongodb', (req, res) => {
       let DB_is_co = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
       res.json("MongoDB is " + DB_is_co);
     });
@@ -27,7 +27,10 @@ const mult = require('./middleware/multer_prvfile');
   router.post('/download', ctrl_prvfile.return_to_download);
 
 //* PUBLIC FILES
-  router.post('/onepubUpload', mult.single('upload-file'), ctrl_pubfile.upload_a_public_file);
+  router.post('/onepubUpload', mult.single('upload-file'), ctrl_pubfile.upload_one_public_file);
+  router.get('/publicfiles', ctrl_pubfile.send_all_public_files);
+  router.post('/pubdownload', ctrl_pubfile.return_to_download_a_pub_file);
+  
 /*
 TODO à tester
   * FILES   

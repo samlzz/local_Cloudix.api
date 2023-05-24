@@ -34,7 +34,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('', the_router);
 
 //* TEST 
-app.get('/testofupload', (req, res, next) =>{
+app.get('/testofupload', (req, res, next) => {
     res.sendFile(__dirname + '/send_file.html');
 });
 

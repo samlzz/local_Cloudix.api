@@ -4,7 +4,7 @@ const fs = require('fs');
 const User = require('../models_db/model_user');
 const func = require('../middleware/functions');
 
-//* RETURN ALL FILE OF ONE USER
+//* RETURN FILE LIST OF ONE USER
 exports.send_file_of_user = (req, res) => {
   let files_list = [];
   User.findById(req.body.user_id)
@@ -13,22 +13,22 @@ exports.send_file_of_user = (req, res) => {
     for (let i = 0; i < user.folder.length; i++) {
       let path_file = user.folder[i].path;
       let file_name = path.basename(path_file);
-      let name_list = file_name.split('-')
+      let two_name = file_name.split('-');
       files_list.push({
         path: path_file, 
-        name: name_list[1],
-        id_file: name_list[0],
+        name: two_name[1],
+        id_file: two_name[0],
         extension: path.extname(path_file)
       });
     };
-    func.returnSM(res, 200, files_list)
+    func.returnFL(res, 200, files_list);
   })
   .catch(err => func.returnSM(res, 500, 'Error when search the user', err));
 };
 
 //* PUT PATH & SIZE COUNT ON MONGODB
 exports.upload_one_private_file = (req, res) => {
-  func.check_and_return(res, user_id, 400, 'Missing data_name');
+  func.check_and_return(res, req.body.user_id, 400, 'Missing data_name');
   func.check_and_return(res, req.file, 400, 'Missing file in request');
   User.findById(req.body.user_id)
   .then(user => {
@@ -75,7 +75,6 @@ exports.delete_a_file = (req, res) => {
         };
       user.folder.splice(his_index, 1);
       let file_size = stats.size / (1024 * 1024); //? size in bytes to size in Megabytes
-      //user.size_count = user.size_count - file_size;
       user.size_count = user.size_count - file_size;
       user.save()
       .then(() => res.status(201).json({ message: 'File removed successfully' }))
@@ -118,9 +117,9 @@ exports.upload_some_private_files = (req, res) => {
 };
 
 //* RETURN FILE TO CLIENT
-exports.return_to_download = (req, res)=>{
+exports.return_to_download = (req, res) => {
   func.check_and_return(res, req.body.user_id, 400, 'Missing user_id');
-  func.check_and_return(res, req.body.filename, 400, 'Missing user_id');
+  func.check_and_return(res, req.body.filename, 400, 'Missing filename');
   User.findById(req.body.user_id)
   .then(user => {
     let file_to_ret = user.folder.find(file => file.path.includes(req.body.filename));
@@ -128,8 +127,6 @@ exports.return_to_download = (req, res)=>{
     res.download(file_to_ret.path, (err) => {
       if (err) {
         func.returnSM(res, 500, 'Error when send file', err);
-      } else {
-        func.returnSM(res, 200, 'File sent correctly');
       };
     });
   })
