@@ -12,9 +12,12 @@ exports.send_file_of_user = (req, res) => {
     func.check_and_return(res, user, 500, 'User not found');
     for (let i = 0; i < user.folder.length; i++) {
       let path_file = user.folder[i].path;
+      let file_name = path.basename(path_file);
+      let name_list = file_name.split('-')
       files_list.push({
         path: path_file, 
-        name: path.basename(path_file),
+        name: name_list[1],
+        id_file: name_list[0],
         extension: path.extname(path_file)
       });
     };
@@ -113,4 +116,23 @@ exports.upload_some_private_files = (req, res) => {
     .catch(err => func.returnSM(res, 500, 'Err when save file path', err));
   })
   .catch(err => func.returnSM(res, 500, 'Err when search the user', err));
+};
+
+//* RETURN FILE TO CLIENT
+exports.return_to_download = (req, res)=>{
+  func.check_and_return(res, req.body.user_id, 400, 'Missing user_id');
+  func.check_and_return(res, req.body.filename, 400, 'Missing user_id');
+  User.findById(req.body.user_id)
+  .then(user => {
+    let file_to_ret = user.folder.find(file => file.path.includes(req.body.filename));
+    func.check_and_return(res, file_to_ret, 401, 'User not found');
+    res.download(file_to_ret.path, (err) => {
+      if (err) {
+        func.returnSM(res, 500, 'Error when send file', err);
+      } else {
+        func.returnSM(res, 200, 'File sent correctly');
+      };
+    });
+  })
+  .catch(err => func.returnSM(res, 500, 'Error when fin the owner', err));
 };
