@@ -28,18 +28,17 @@ exports.send_file_of_user = (req, res) => {
 
 //* PUT PATH & SIZE COUNT ON MONGODB
 exports.upload_one_private_file = (req, res) => {
-  let user_name = req.body?.data_name;
-  func.check_and_return(res, user_name, 400, 'Missing data_name');
+  func.check_and_return(res, user_id, 400, 'Missing data_name');
   func.check_and_return(res, req.file, 400, 'Missing file in request');
-  let path_moved = path.join(__dirname, '..', 'data', user_name);
-  if(!fs.existsSync(path_moved)) {  //? check if folder doesn't exist
-    fs.mkdirSync(path_moved); //? and create it if it doesn't
-  };
-  path_moved = path.join(path_moved, req.file.filename);
-  fs.renameSync(req.file.path, path_moved);
   User.findById(req.body.user_id)
   .then(user => {
     func.check_and_return(res, user, 500, 'User not found');
+    let path_moved = path.join(__dirname, '..', 'data', user.data_name);
+    if(!fs.existsSync(path_moved)) {  //? check if folder doesn't exist
+      fs.mkdirSync(path_moved); //? and create it if it doesn't
+    };
+    path_moved = path.join(path_moved, req.file.filename);
+    fs.renameSync(req.file.path, path_moved);
     user.folder.push({ path: path_moved });
     fs.stat(path_moved, (err, stats) => {
       if (err) {
