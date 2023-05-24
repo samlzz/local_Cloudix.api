@@ -8,27 +8,26 @@ const ctrl_prvfile = require('./controllers/privates_files');
 const ctrl_pubfile = require('./controllers/public_files');
 //const ctrl_file = require('./controllers/files');
 const mult = require('./middleware/multer_prvfile');
-const Mongo = require('./middleware/mongoDB');
 
-//* MONGODB
+//* MONGODB STATUS
   router.get('/mongodb', Mongo.connexion, (req, res) => {
       let DB_is_co = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
       res.json("MongoDB is " + DB_is_co);
     });
 
 //* USER
-  router.post('/register', Mongo.connexion,  ctrl_user.register);
-  router.post('/login', Mongo.connexion, ctrl_user.login);
-  router.delete('/deluser', Mongo.connexion, ctrl_user.delete_user);
+  router.post('/register', ctrl_user.register);
+  router.post('/login', ctrl_user.login);
+  router.delete('/deluser', ctrl_user.delete_user);
 
 //* PRIVATES FILES
-  router.post('/fileofuser', Mongo.connexion, ctrl_prvfile.send_file_of_user);
-  router.post('/oneupload', Mongo.connexion, mult.single('upload-file'), ctrl_prvfile.upload_one_private_file);
-  router.delete('/delfile', Mongo.connexion, ctrl_prvfile.delete_a_file);
-  router.post('/download', Mongo.connexion, ctrl_prvfile.return_to_download);
+  router.post('/fileofuser', ctrl_prvfile.send_file_of_user);
+  router.post('/oneupload', mult.single('upload-file'), ctrl_prvfile.upload_one_private_file);
+  router.delete('/delfile', ctrl_prvfile.delete_a_file);
+  router.post('/download', ctrl_prvfile.return_to_download);
 
 //* PUBLIC FILES
-  router.post('/onepubUpload', Mongo.connexion, mult.single('upload-file'), ctrl_pubfile.upload_a_public_file);
+  router.post('/onepubUpload', mult.single('upload-file'), ctrl_pubfile.upload_a_public_file);
 /*
 TODO à tester
   * FILES   
