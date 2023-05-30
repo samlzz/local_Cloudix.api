@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const the_router = require('./routes');
+const func = require('./middleware/functions');
 
 const app = express();
 
@@ -30,7 +31,7 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//* PUT REQUEST IN ROUTER
+//* SEND REQUEST TO ROUTER
 app.use('', the_router);
 
 //* TEST 

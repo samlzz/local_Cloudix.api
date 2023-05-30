@@ -1,18 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const path = require('path');
 
 const ctrl_user = require('./controllers/user');
 const ctrl_prvfile = require('./controllers/privates_files');
 const ctrl_pubfile = require('./controllers/public_files');
 //const ctrl_file = require('./controllers/files');
-const mult = require('./middleware/multer_prvfile');
+const mult = require('./middleware/multer');
+
 
 //* MONGODB STATUS
-  router.get('/mongodb', (req, res) => {
+  router.get('/mongodb', (req, res, next) => {
       let DB_is_co = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
       res.json("MongoDB is " + DB_is_co);
+      next();
     });
 
 //* USER

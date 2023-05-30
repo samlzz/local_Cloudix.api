@@ -5,18 +5,18 @@ const func = require('../middleware/functions');
 
 //* LOGIN
 exports.login = (req, res) => {  //? check if the user who try to login is existing
-    func.check_and_return(res, req.body.password, 400, 'Missing password in request');
+    let mdp_who_log = req.body?.password;
+    func.check_and_return(res, mdp_who_log, 400, 'Missing password in request');
     func.check_and_return(res, req.body.data_name, 400, 'Missing data name in request');
-    let mdp_who_log = req.body.password;
     User.findOne({ data_name: req.body.data_name })
         .then(user => {
             func.check_and_return(res, user, 401, 'Username not found')
             argon.verify(user.password, mdp_who_log) //? check if passwords matches
             .then(result => {
                 if (result) {
-                    return res.status(200).json({ user_id: user._id });
+                    func.returnID(res, 200, user._id, 'Succesfully login');
                 } else {
-                    return func.returnSM(res, 401, 'Wrong password');
+                    func.returnSM(res, 401, 'Wrong password');
                 };
             })
             .catch(err => func.returnSM(res, 500, 'Error when hash password', err));
@@ -45,7 +45,7 @@ exports.register = (req, res) => {  //? check if the username don't already exis
                     user.save()
                     .then(() => {
                         User.findOne({ data_name: usr_reg_min })
-                        .then(user => res.status(201).json({ status: 201, user_id: user._id, message: 'User was created' }))
+                        .then(user => func.returnID(res, 201, user._id, 'User was created'))
                         .catch(err => func.returnSM(res, 500, 'Error when find user', err));
                     })
                     .catch(err => func.returnSM(res, 500, 'Error when save user', err));
@@ -58,6 +58,7 @@ exports.register = (req, res) => {  //? check if the username don't already exis
 
 //* DELETE ONE USER
 exports.delete_user = (req, res) =>{
+    func.check_and_return(res, req.body.user_id, 400, 'Missing userId in request');
     User.findByIdAndDelete(req.body.user_id)
     .then(result => {
         if (!func.check_and_return(res, result, 404, "Don't find the user")){

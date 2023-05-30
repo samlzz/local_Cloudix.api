@@ -6,6 +6,7 @@ const func = require('../middleware/functions');
 
 //* RETURN FILE LIST OF ONE USER
 exports.send_file_of_user = (req, res) => {
+  func.check_and_return(res, req.body.user_id, 400, 'Missing userID in request');
   let files_list = [];
   User.findById(req.body.user_id)
   .then(user => {
@@ -28,7 +29,7 @@ exports.send_file_of_user = (req, res) => {
 
 //* PUT PATH & SIZE COUNT ON MONGODB
 exports.upload_one_private_file = (req, res) => {
-  func.check_and_return(res, req.body.user_id, 400, 'Missing data_name');
+  func.check_and_return(res, req.body.user_id, 400, 'Missing userID in request');
   func.check_and_return(res, req.file, 400, 'Missing file in request');
   User.findById(req.body.user_id)
   .then(user => {
@@ -56,6 +57,8 @@ exports.upload_one_private_file = (req, res) => {
 
 //* DELETE A FILE
 exports.delete_a_file = (req, res) => {
+  func.check_and_return(res, req.body.user_id, 400, 'Missing userID in request');
+  func.check_and_return(res, req.body.filename, 400, 'Missing file name in request');
   User.findById(req.body.user_id)
   .then(user => {
     func.check_and_return(res, user, 500, 'User not found');
@@ -87,16 +90,15 @@ exports.delete_a_file = (req, res) => {
 
 //* PUT PATH & SIZE COUNT OF EACH
 exports.upload_some_private_files = (req, res) => {
-  let user_name = req.body?.data_name;
-  func.check_and_return(res, user_name, 400, 'Missing data_name')
-  func.check_and_return(res, req.file, 400, 'Missing file in request')
-  let path_moved = path.join(__dirname, '..', 'data', user_name);
-  if(!fs.existsSync(path_moved)) {  //? check if folder doesn't exist
-    fs.mkdirSync(path_moved); //? and create it if it doesn't
-  };
+  func.check_and_return(res, req.file, 400, 'Missing file in request');
+  func.check_and_return(res, req.body.user_id, 400, 'Missing userID in request');
   User.findById(req.body.user_id)
   .then(user => {
     func.check_and_return(res, user, 500, 'User not found');
+    let path_moved = path.join(__dirname, '..', 'data', user.username);
+    if(!fs.existsSync(path_moved)) {  //? check if folder doesn't exist
+      fs.mkdirSync(path_moved); //? and create it if it doesn't
+    };
     for(let i = 0; i < req.file.length; i++){
       path_moved = path.join(path_moved, req.file[i].filename);
       fs.renameSync(req.file[i].path, path_moved);
