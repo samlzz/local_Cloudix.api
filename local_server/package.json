@@ -4,7 +4,8 @@
   "description": "server of Cloudix app | the local version (for test)",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "depend": ""
   },
   "repository": {
     "type": "git",
