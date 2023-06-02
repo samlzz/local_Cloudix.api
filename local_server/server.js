@@ -1,6 +1,10 @@
 const http = require('http');
 const app = require('./api');
 
+//for get information about segmentation error
+const SegfaultHandler = require('segfault-handler');
+SegfaultHandler.registerHandler('crash.log');
+
 const port = 6699;
 const host = 'localhost';
 app.set('port', port);
