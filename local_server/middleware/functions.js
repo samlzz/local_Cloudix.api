@@ -35,3 +35,20 @@ exports.returnID = (res, code_status, the_id, msg) => {
     };
 };
 
+exports.gest_error = (error) => {
+    if (error.syscall !== 'listen') {
+        throw error;
+    };
+    switch (error.code) {
+        case 'EACCES':
+            console.error('The port ' + port + ' need more permission.');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            console.error('The port ' + port + ' has already use.');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    };
+};

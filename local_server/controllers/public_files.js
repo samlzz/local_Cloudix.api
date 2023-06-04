@@ -82,7 +82,7 @@ exports.send_all_public_files = (req, res) => {
 };
 
 //* RETURN FILE TO CLIENT
-exports.return_to_download_a_pub_file = (req, res) => {
+exports.return_public_to_download = (req, res) => {
     func.check_and_return(res, req.body.filename, 400, 'Missing filename');
     Public_files.findOne({name: req.body.filename})
     .then(file =>{
