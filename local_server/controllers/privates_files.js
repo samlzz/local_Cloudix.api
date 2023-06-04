@@ -8,7 +8,7 @@
 
 //* FUNCTIONS
 
-//return files
+//return prv files
   exports.send_all_file_of_user = (req, res) => {   //?send all the files(path, name, id_file, extension) of a user in a list
     func.check_and_return(res, req.body.user_id, 400, 'Missing userID in request');
     let files_list = [];

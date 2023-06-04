@@ -8,6 +8,7 @@
   const ctrl_prvfile = require('./controllers/privates_files');
   const ctrl_pubfile = require('./controllers/public_files');
   //const ctrl_file = require('./controllers/files');
+//? save the file localy in 'data'
   const mult = require('./middleware/multer');
 
 
@@ -18,16 +19,16 @@
 
 
 //* PRIVATES FILES
-  router.post('/fileofuser', ctrl_prvfile.send_all_file_of_user);
-  router.post('/oneupload', mult.single('upload-file'), ctrl_prvfile.upload_one_private_file);
-  router.delete('/delfile', ctrl_prvfile.delete_a_private_file);
-  router.post('/download', ctrl_prvfile.return_file_to_download);
+  router.post('/fileofuser', ctrl_prvfile.send_all_file_of_user);   //!need : user_id
+  router.post('/oneupload', mult.single('upload-file'), ctrl_prvfile.upload_one_private_file);  //!need : user_id, file
+  router.delete('/delfile', ctrl_prvfile.delete_a_private_file);  //!need : user_id, filename
+  router.post('/download', ctrl_prvfile.return_file_to_download);   //!need : user_id, filename
 
 
 //* PUBLIC FILES
-  router.post('/onepubUpload', mult.single('upload-file'), ctrl_pubfile.upload_one_public_file);
+  router.post('/onepubUpload', mult.single('upload-file'), ctrl_pubfile.upload_one_public_file);  //!need : user_id, file
   router.get('/publicfiles', ctrl_pubfile.send_all_public_files);
-  router.post('/pubdownload', ctrl_pubfile.return_public_to_download);
+  router.post('/pubdownload', ctrl_pubfile.return_public_to_download);   //!need : filename
   
 
 /*
