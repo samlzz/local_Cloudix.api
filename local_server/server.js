@@ -2,18 +2,18 @@ const http = require('http');
 const app = require('./api');
 
 //? for get information about segmentation error
+/*
   const SegfaultHandler = require('segfault-handler');
 
-  /* 
+   
   SegfaultHandler.registerHandler('seg.log', (signal, address, stack) => {
     console.error('ERREUR DE SEGMENTATION !');
     console.error('Signal :', signal);
     console.error('Adresse :', address);
     console.error('Pile d\'appels :', stack);
   });
-  */
   SegfaultHandler.registerHandler('seg.log');
-
+*/
 
 const port = 6699;
 const host = 'localhost';
