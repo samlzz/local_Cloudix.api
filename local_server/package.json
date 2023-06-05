@@ -23,5 +23,11 @@
   "bugs": {
     "url": "https://github.com/samlzz/cloud_services/issues"
   },
-  "homepage": "https://github.com/samlzz/cloud_services#readme"
+  "homepage": "https://github.com/samlzz/cloud_services#readme",
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 3,
+    "semi": true,
+    "singleQuote": true
+  }
 }
