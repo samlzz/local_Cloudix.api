@@ -1,13 +1,14 @@
 //* IMPORTS
   const http = require('http');
-  const app = require('./api');
+  const ip = require('ip');
 
+  const app = require('./api');
   const func = require('./middleware/functions');
   
 
 //* INIT APP
   const port = 6699;
-  const host = 'localhost';
+  const host = ip.address();
 
   app.set('port', port);
 
