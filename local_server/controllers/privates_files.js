@@ -27,7 +27,7 @@
               let two_name = file_name.split('-');
               files_list.push({
                 path: path_file,
-                name: two_name[1],
+                name: path.parse(two_name[1]).name,
                 id_file: two_name[0],
                 extension: path.extname(path_file),
               });
