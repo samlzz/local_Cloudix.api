@@ -69,7 +69,7 @@
               user
                 .save()
                 .then(() =>
-                    func.returnSM(res, 201, 'File uploaded successfully')
+                    res.setHeader('Location', '/').sendStatus(302).json({ status: 302, message: "File uploaded successfully" })
                 )
                 .catch((err) =>
                     func.returnSM(res, 500, 'Error when save the file', err)
