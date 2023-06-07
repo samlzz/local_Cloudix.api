@@ -35,9 +35,9 @@
 
 
 //* FOR DEV & TEST
-    //check connexion to database
 
-    app.get('/mongodb', (req, res, next) => {
+    //check connexion to database
+        app.get('/mongodb', (req, res, next) => {
         let DB_is_co = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
         res.json("MongoDB is " + DB_is_co);
         next();
@@ -48,6 +48,7 @@
     app.get('/testofupload', (req, res, next) => {
         res.sendFile(__dirname + '/send_file.html');
     });
+
 
 
 module.exports = app;

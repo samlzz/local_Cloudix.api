@@ -8,7 +8,8 @@
 
 //* INIT APP
   const port = 6699;
-  const host = ip.address();
+  //const host = ip.address();
+  const host = "localhost"
 
   app.set('port', port);
 
